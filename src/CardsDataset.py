@@ -5,8 +5,10 @@ from torch.utils.data import Dataset
 
 
 class CardsDataset(Dataset):
-    def __init__(self, cards_dir, transform = None):
-        self.cards_paths = glob.glob(os.path.join(cards_dir, '*.jpg'))
+    def __init__(self, cards_path, transform = None):
+        path_is_dir = os.path.isdir(cards_path)
+
+        self.cards_paths = glob.glob(os.path.join(cards_path, '*.jpg')) if path_is_dir else [cards_path]
         self.transform = transform
 
     def __len__(self):

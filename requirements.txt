@@ -3,4 +3,5 @@ torch
 torchvision
 tqdm
 matplotlib
+scikit-learn
 imagesize

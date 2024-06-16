@@ -12,9 +12,9 @@ class Encoder(nn.Module):
     
     def _gen_block(self, in_channels, out_channels):
         return nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size = 2, padding = 1),
+            nn.Conv2d(in_channels, out_channels, kernel_size = 2, padding = 0, stride = 2),
             nn.ReLU(),
-            nn.MaxPool2d(2)
+            #nn.MaxPool2d(2)
         )
 
     def forward(self, x):
