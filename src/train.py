@@ -22,7 +22,7 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    data = CardsDataset(args.input_dir, transform = T.Compose([T.ToTensor(), T.Resize((640, 448))])) # T.ToTensor() already normalizes
+    data = CardsDataset(args.input_path, transform = T.Compose([T.Resize((640, 448)), T.RandomEqualize(p = 1), T.ToTensor()])) # T.ToTensor() already normalizes
     train_data, val_data = random_split(data, [1 - args.val_prop, args.val_prop])
     
     train_dataloader = DataLoader(train_data, shuffle = True)

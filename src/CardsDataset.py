@@ -1,5 +1,5 @@
 import os
-import cv2
+from PIL import Image
 import glob
 from torch.utils.data import Dataset
 
@@ -15,11 +15,12 @@ class CardsDataset(Dataset):
         return len(self.cards_paths)
         
     def __getitem__(self, idx):
-        image = cv2.cvtColor(
-            cv2.imread(self.cards_paths[idx]),
-            cv2.COLOR_BGR2RGB)
+        image = Image.open(self.cards_paths[idx])
         
         if self.transform is not None:
-            image = self.transform(image)
+            try:
+                image = self.transform(image)
+            except:
+                print(idx, self.cards_paths[idx])
         
         return image, image

@@ -23,7 +23,7 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
 
-    data = CardsDataset(args.input_path, transform = T.Compose([T.ToTensor(), T.Resize((640, 448))])) # T.ToTensor() already normalizes
+    data = CardsDataset(args.input_path, transform = T.Compose([T.Resize((640, 448)), T.ToTensor()])) # T.ToTensor() already normalizes
     dataloader = DataLoader(data, shuffle = True)
 
     model = Model()

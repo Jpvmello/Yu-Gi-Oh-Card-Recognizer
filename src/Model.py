@@ -42,7 +42,7 @@ class Model(nn.Module):
 
             self.optimizer.step()
 
-        print('Training loss:', 100 * loss.item()) # reduction = 'mean' by default
+        print('Training loss:', loss.item()) # reduction = 'mean' by default
 
     def val_step(self, val_dataloader):
         self.eval()
@@ -57,7 +57,7 @@ class Model(nn.Module):
 
                 loss = self.loss_function(output_image, target_image)
 
-        val_loss = 100 * loss.item()
+        val_loss = loss.item()
         print('Validation loss:', val_loss)
         return val_loss
 
