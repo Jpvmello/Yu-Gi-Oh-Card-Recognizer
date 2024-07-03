@@ -9,7 +9,6 @@ from tqdm.std import tqdm
 from CardsDataset import CardsDataset
 from Model import Model
 import numpy as np
-from sklearn.neighbors import NearestNeighbors
 from annoy import AnnoyIndex
 
 def parse_args():
@@ -18,6 +17,7 @@ def parse_args():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument("input_path", help = "Path or directory of the input card(s) image(s).")
+    parser.add_argument("dataset_dir", help = "Directory of the cards images database.")
     parser.add_argument("model_path", help = "Path to the trained model.")
     parser.add_argument("embedding_path", help = "Path to the saved cards embedding.")
    
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     dimension_file_path = os.path.splitext(args.embedding_path)[0] + '_dim.pkl'
 
     input_data = CardsDataset(args.input_path, transform = T.Compose([T.Resize((640, 448)), T.RandomEqualize(p = 1), T.ToTensor()])) # T.ToTensor() already normalizes
-    data = CardsDataset("cards_fullbody", transform = T.Compose([T.Resize((640, 448)), T.RandomEqualize(p = 1), T.ToTensor()])) # T.ToTensor() already normalizes
+    data = CardsDataset(args.dataset_dir, transform = T.Compose([T.Resize((640, 448)), T.RandomEqualize(p = 1), T.ToTensor()])) # T.ToTensor() already normalizes
     
     input_dataloader = DataLoader(input_data, shuffle = True)
     dataloader = DataLoader(data, shuffle = False)
@@ -46,13 +46,9 @@ if __name__ == '__main__':
         print(args.embedding_path, 'loaded.')
 
         for image, _ in tqdm(input_dataloader):
-            #image = T.RandomHorizontalFlip(p=1)(image)
-            #image = T.RandomAffine(5, translate = (.05, .05))(image)
-            #image = T.ColorJitter(brightness = .5, hue = .1, contrast = .2)(image)
             input  = np.moveaxis(image[0].cpu().detach().numpy(), 0, -1)
-            #image = T.RandomEqualize(p = 1)((255 * image).to(torch.uint8)) / 255.0
             encoding = model.encoder(image)[0].cpu().detach().numpy()
-            pred_idx = embedding.get_nns_by_vector(encoding, 1)[0] #knn.kneighbors(encoding.reshape(encoding.shape[0], -1))[1][0][0]
+            pred_idx = embedding.get_nns_by_vector(encoding, 1)[0]
             print(pred_idx)
 
             prediction = np.moveaxis(
